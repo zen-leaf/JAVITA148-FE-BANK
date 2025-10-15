@@ -44,30 +44,57 @@ function aggiungiUser(event) {
     event.preventDefault();
 
     const form = event.target;
+    let response = document.getElementById("addresponse");
 
-    addUser(form.nome.value, form.cognome.value, form.datanascita.value, form.tipologia.value);
-    clearForm(form);
+    if (addUser(form.nome.value, form.cognome.value, form.datanascita.value, form.tipologia.value)) {
+        response.innerText = "Utente aggiunto con successo";
+        response.style.color = "green"
+        clearForm(form);
+    } else {
+        response.innerText = "Errore nell'aggiunta dell'utente.";
+        response.style.color = "red";
+    }
+    response.style.visibility = "visible";
+
 };
 
 function addUser(nome, cognome, datanascita, tipologia) {
+    if (nome == "" || cognome == "") {
+        return false;
+    }
     let b = new User(nome, cognome, datanascita, tipologia)
     retrieveUsersFromStorage();
     users.push(b);
     pushUsersToStorage();
+    return true;
 
 }
 function rimuoviUser(event) {
+    event.preventDefault();
+
     const form = event.target;
-    removeUser(form.name.value, form.cognome.value);
+    let response = document.getElementById("removeresponse");
+    if (removeUser(form.name.value, form.cognome.value)) {
+        response.innerText = "Utente rimosso con successo";
+        response.style.color = "green"
+    } else {
+        response.innerText = "Errore nella rimozione dell'utente.";
+        response.style.color = "red";
+    }
+    response.style.visibility = "visible";
+
 }
 function removeUser(nome, cognome) {
     retrieveUsersFromStorage();
     for (let i = 0; i < users.length; i++) {
         if (users[i].nome === nome && users[i].cognome === cognome) {
             users.splice(i, 1)
+            pushUsersToStorage();
+            return true;
         }
     }
-    pushUsersToStorage();
+    return false;
+
 }
 
 function clearForm(form) {
@@ -92,7 +119,7 @@ function renderizzaTabellaNew() {
     retrieveUsersFromStorage();
     console.log(users);
     var out = document.getElementById('table-output');
-    if(out==null){
+    if (out == null) {
         return;
     }
     if (users.length == 0) {
