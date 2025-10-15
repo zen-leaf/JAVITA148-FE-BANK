@@ -1,0 +1,80 @@
+/* ========== FORM ========== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 420px;
+  margin: 2rem;
+  padding: 1rem;
+  box-sizing: border-box;
+
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fafafa;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Struttura dei campi */
+form>div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: center;
+  column-gap: 0.75rem;
+}
+
+/* Label */
+form label {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Input, select, textarea */
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Effetto focus */
+form input:focus,
+form select:focus,
+form textarea:focus {
+  border-color: #0077ff;
+  box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.15);
+  outline: none;
+}
+
+/* ========== TABELLA ========== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+}
+
+th {
+  background-color: #f2f2f2;
+  text-align: left;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #eee;
+}
+
+.navbar-nav>li {
+  float: none;
+  display: inline-block;
+}

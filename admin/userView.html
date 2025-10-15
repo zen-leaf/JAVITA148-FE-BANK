@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="../styles.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <title>User view panel</title>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-default bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="../index.html">Banca del Bruno</a>
+                <ul class="navbar-nav ms-auto py-0 py-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/admin/userActions.html">Add/remove clients</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/userView.html">View client list</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/clientOperations.html" target="_blank">Client
+                            operations</a></li>
+                </ul>
+
+
+            </div>
+        </nav>
+    </header>
+    <div class="output">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Data di Nascita</th>
+                    <th>Tipologia conto</th>
+                    <th>Elimina</th>
+                </tr>
+            </thead>
+
+            <!-- 
+            Usiamo l'id così siamo sicuri di recuperare questo elemento
+            tramite JS senza grossi problemi
+          -->
+            <tbody id="table-output">
+            </tbody>
+
+        </table>
+        <p id="hiddenNavHelper" style="display: none;">No users in list, head to <a href="/admin/userActions.html">the
+                user action panel</a> to add a new user</p>
+        <script src="users.js"></script>
+</body>
+
+</html>
