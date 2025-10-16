@@ -45,14 +45,14 @@ function renderTransList() {
 // ------------------------------ USERS ------------------------------------
 
 class Entity {
-    constructor() {
-        this.id = nextID;
+    constructor(id) {
+        this.id = id;
     }
 }
 class User extends Entity {
 
-    constructor(nome, cognome, datanascita, tipologia) {
-        super();
+    constructor(id, nome, cognome, datanascita, tipologia) {
+        super(id);
         this.nome = nome;
         this.cognome = cognome;
         this.datanascita = datanascita;
@@ -66,16 +66,16 @@ class User extends Entity {
         <td>${this.cognome}</td>
         <td>${this.datanascita}</td>
         <td>${this.tipologia}</td>
-        <td><button onclick="deletebyid(${users.indexOf(this)})">Elimina</button></td>
+        <td><button onclick="deleteuserbyid(${users.indexOf(this)})">Elimina</button></td>
         </tr>`;
     }
 
 }
-function deletebyid(id) {
+function deleteuserbyid(id) {
     retrieveUsersFromStorage();
     users.splice(id, 1);
     pushUsersToStorage();
-    renderizzaTabellaNew();
+    renderUserList();
 }
 
 
@@ -88,7 +88,7 @@ function retrieveUsersFromStorage() {
     if (temp == null) return;
     let tusers = [];
     for (let i = 0; i < temp.length; i++) {
-        tusers.push(new User(temp[i].nome, temp[i].cognome, temp[i].datanascita, temp[i].tipologia))
+        tusers.push(new User(temp[i].id, temp[i].nome, temp[i].cognome, temp[i].datanascita, temp[i].tipologia))
     }
     users = tusers;
 }
@@ -104,7 +104,7 @@ function aggiungiUser(event) {
     const form = event.target;
     let response = document.getElementById("addresponse");
 
-    if (addUser(form.nome.value, form.cognome.value, form.datanascita.value, form.tipologia.value)) {
+    if (addUser(nextID,form.nome.value, form.cognome.value, form.datanascita.value, form.tipologia.value)) {
         response.innerText = "Utente aggiunto con successo";
         response.style.color = "green"
         nextID++;
@@ -117,11 +117,11 @@ function aggiungiUser(event) {
     response.style.visibility = "visible";
 
 };
-function addUser(nome, cognome, datanascita, tipologia) {
+function addUser(id,nome, cognome, datanascita, tipologia) {
     if (nome == "" || cognome == "") {
         return false;
     }
-    let b = new User(nome, cognome, datanascita, tipologia)
+    let b = new User(id, nome, cognome, datanascita, tipologia)
     retrieveUsersFromStorage();
     users.push(b);
     pushUsersToStorage();
@@ -169,9 +169,16 @@ class Transaction {
         <td>${this.net}</td>
         <td>${this.type}</td>
         <td>${this.date}</td>
-        <td><button onclick="deletebyid(${users.indexOf(this)})">Elimina</button></td>
+        <td><button onclick="deletetransbyid(${trans.indexOf(this)})">Elimina</button></td>
         </tr>`;
     }
+
+}
+function deletetransbyid(id) {
+    retrieveTransactionsFromStorage();
+    trans.splice(id, 1);
+    pushTransactionToStorage();
+    renderTransList();
 }
 function retrieveTransactionsFromStorage() {
     let temp = JSON.parse(localStorage.getItem("trans"));
