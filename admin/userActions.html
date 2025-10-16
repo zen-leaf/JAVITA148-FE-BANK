@@ -20,77 +20,79 @@
         <div id="nav-placeholder"></div>
     </header>
 
-    <div class="myclass">
-        <div style="float: left; width: 50%;">
-            <form onsubmit="aggiungiUser(event)">
-                <h1 style="height: 1.5rem;">Add new client</h1>
-                <div id="addresponse" class="inlineresponse">
 
-                </div>
+    <div class="container-sm">
+        <div class="row">
+            <div class="col-md">
+                <form onsubmit="aggiungiUser(event)">
+                    <h1 style="height: 1.5rem;">Add new client</h1>
+                    <div id="addresponse" class="inlineresponse">
 
-                <div>
-                    <label for="nome">Nome</label>
-                    <input id="nome" name="nome" type="text">
-                </div>
+                    </div>
 
-                <div>
-                    <label for="cognome">Cognome</label>
-                    <input id="cognome" name="cognome" type="text">
-                </div>
+                    <div>
+                        <label for="nome" class="form-label">Nome</label>
+                        <input id="nome" name="nome" type="text" class="form-text">
+                    </div>
 
-                <div>
-                    <label for="datanascita">Data di Nascita</label>
-                    <input id="datanascita" name="datanascita" type="date">
-                </div>
+                    <div>
+                        <label for="cognome" class="form-label">Cognome</label>
+                        <input id="cognome" name="cognome" type="text">
+                    </div>
 
-                <div>
-                    <label for="tipologia">Tipo conto</label>
-                    <select id="tipologia" name="tipologia">
-                        <option value="Ordinario">
-                            Ordinario
-                        </option>
-                        <option value="Pacchetto">
-                            Pacchetto
-                        </option>
-                        <option value="Convenzionato">
-                            Convenzionato
-                        </option>
-                    </select>
-                </div>
+                    <div>
+                        <label for="datanascita" class="form-label">Data di Nascita</label>
+                        <input id="datanascita" name="datanascita" type="date" class="form-floating">
+                    </div>
+
+                    <div>
+                        <label for="tipologia" class="form-label">Tipo conto</label>
+                        <select id="tipologia" name="tipologia" class="form-text">
+                            <option value="Ordinario">
+                                Ordinario
+                            </option>
+                            <option value="Pacchetto">
+                                Pacchetto
+                            </option>
+                            <option value="Convenzionato">
+                                Convenzionato
+                            </option>
+                        </select>
+                    </div>
 
 
-                <button type="submit" style="display:inline-block;">Add new</button>
+                    <button class="btn btn-primary" type="submit">Add new</button>
 
 
-            </form>
+                </form>
+            </div>
+            <div class="col-md">
+                <form onsubmit="rimuoviUser(event)">
+                    <h1 style="height: 1.5rem;">Remove client</h1>
+                    <div id="removeresponse" class="inlineresponse">
+
+                    </div>
+                    <div>
+                        <label for="nome" class="form-label">Nome</label>
+                        <input id="nome" name="nome" type="text" class="form-text">
+                    </div>
+
+                    <div>
+                        <label for="cognome" class="form-label">Cognome</label>
+                        <input id="cognome" name="cognome" type="text" class="form-text">
+                    </div>
+
+
+                    <button class="btn btn-primary" type="submit">Remove</button>
+
+
+                </form>
+            </div>
         </div>
-        <div style="float: left; width: 50%;">
-            <form onsubmit="rimuoviUser(event)">
-                <h1 style="height: 1.5rem;">Remove client</h1>
-                <div id="removeresponse" class="inlineresponse">
-
-                </div>
-                <div>
-                    <label for="nome">Nome</label>
-                    <input id="nome" name="nome" type="text">
-                </div>
-
-                <div>
-                    <label for="cognome">Cognome</label>
-                    <input id="cognome" name="cognome" type="text">
-                </div>
-
-
-                <button type="submit">Remove existing</button>
-
-
-            </form>
-        </div>
-
     </div>
 
 
-    <script src="users.js"></script>
+    <script src="/js/script.js"></script>
     <script>
         console.log("lol");
         $.get("/nav.html", function (data) {

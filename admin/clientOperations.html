@@ -17,9 +17,42 @@
 
 <body>
     <div id="nav-placeholder"></div>
+
+    <div class="container-lg ">
+        <div class="row m-auto">
+            <div class="col-md">
+                <button class="btn btn-primary w-100" onclick="generateRandomTransaction()">Generate a random
+                    transaction</button>
+            </div>
+            <div class="col-md">
+                <button class="btn btn-primary w-100" onclick="clearTransactions()">Clear all
+                    transactions</button>
+            </div>
+        </div>
+    </div>
+    <div class="output">
+        <table>
+            <thead>
+                <tr>
+                    <th>Trans.Owner</th>
+                    <th>Amount</th>
+                    <th>Trans.Type</th>
+                    <th>Executed on</th>
+                    <th>Elimina</th>
+                </tr>
+            </thead>
+            <tbody id="generatedTransList">
+            </tbody>
+
+        </table>
+        <p id="hiddenNavHelper" style="display: none;">No transactions to show, generate one via the dedicated button
+            above.</p>
+    </div>
+
     <h1>Page not yet implemented</h1>
+    <script src="/js/script.js"></script>
     <script>
-        console.log("lol");
+        renderTransList();
         $.get("/nav.html", function (data) {
             $("#nav-placeholder").replaceWith(data);
         });

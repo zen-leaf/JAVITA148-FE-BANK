@@ -25,6 +25,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>Acc.ID</th>
                     <th>Nome</th>
                     <th>Cognome</th>
                     <th>Data di Nascita</th>
@@ -33,23 +34,20 @@
                 </tr>
             </thead>
 
-            <!-- 
-            Usiamo l'id così siamo sicuri di recuperare questo elemento
-            tramite JS senza grossi problemi
-          -->
-            <tbody id="table-output">
+            <tbody id="generatedUserList">
             </tbody>
 
         </table>
-        <p id="hiddenNavHelper" style="display: none;">No users in list, head to <a href="/admin/userActions.html">the
-                user action panel</a> to add a new user</p>
-        <script src="users.js"></script>
-        <script>
-            console.log("lol");
-            $.get("/nav.html", function (data) {
-                $("#nav-placeholder").replaceWith(data);
-            });
-        </script>
+    </div>
+    <p id="hiddenNavHelper" style="display: none;">No users in list, head to <a href="/admin/userActions.html">the
+            user action panel</a> to add a new user</p>
+    <script src="/js/script.js"></script>
+    <script>
+        renderUserList();
+        $.get("/nav.html", function (data) {
+            $("#nav-placeholder").replaceWith(data);
+        });
+    </script>
 </body>
 
 </html>
