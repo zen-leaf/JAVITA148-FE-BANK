@@ -43,7 +43,7 @@
             user action panel</a> to add a new user</p>
     <script src="/js/script.js"></script>
     <script>
-        renderUserList();
+        renderUserTable();
         $.get("/nav.html", function (data) {
             $("#nav-placeholder").replaceWith(data);
         });

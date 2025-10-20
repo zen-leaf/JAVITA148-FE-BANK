@@ -29,27 +29,38 @@
                     transactions</button>
             </div>
         </div>
-    </div>
-    <div class="output">
-        <table>
-            <thead>
-                <tr>
-                    <th>Trans.Owner</th>
-                    <th>Amount</th>
-                    <th>Trans.Type</th>
-                    <th>Executed on</th>
-                    <th>Elimina</th>
-                </tr>
-            </thead>
-            <tbody id="generatedTransList">
-            </tbody>
+        <div class="row m-auto">
+            <div class="col-md">
+                <div class="py-2">
+                    <label for="transfilter">Filter:</label>
+                    <input class="w-75 form-floating" type="text" id="transfilter" name="transfilter" />
+                </div>
+            </div>
+        </div>
+        <div class="row m-auto">
+            <div class="output">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Trans.Owner</th>
+                            <th>Amount</th>
+                            <th>Trans.Type</th>
+                            <th>Executed on</th>
+                            <th>Elimina</th>
+                        </tr>
+                    </thead>
+                    <tbody id="generatedTransList">
+                    </tbody>
 
-        </table>
-        <p id="hiddenNavHelper" style="display: none;">No transactions to show, generate one via the dedicated button
-            above.</p>
-    </div>
+                </table>
+                <p id="hiddenNavHelper" style="display: none;">No transactions to show, generate one via the dedicated
+                    button
+                    above.</p>
+            </div>
+        </div>
 
-    <h1>Page not yet implemented</h1>
+        <h1>Page not yet implemented</h1>
+    </div>
     <script src="/js/script.js"></script>
     <script>
         renderTransList();

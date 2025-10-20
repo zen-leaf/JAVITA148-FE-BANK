@@ -1,7 +1,10 @@
 let tempusers = [];
 var users = [];
+var userMap = new Map();
 var trans = [];
-var nextID = JSON.parse(localStorage.getItem("nextID")) || 1;
+var transMap = new Map();
+var nextUserID = JSON.parse(localStorage.getItem("nextUserID")) || 1;
+var nextTransID = JSON.parse(localStorage.getItem("nextTransID")) || 1;
 
 //localStorage.setItem("nextID",JSON.stringify(1));
 
@@ -12,9 +15,9 @@ function clearForm(form) {
 };
 
 
-function renderUserList() {
+function renderUserTable() {
     retrieveUsersFromStorage();
-    var out = document.getElementById('generatedUserList');
+    let out = document.getElementById('generatedUserList');
     if (out == null) {
         return;
     }
@@ -27,9 +30,40 @@ function renderUserList() {
 
     out.innerHTML = users.map(d => d.renderTableRow()).join(" ");
 }
+function refreshEditForm() {
+    let userSelectField = document.getElementById("userSelectionList");
+    let editForm = document.getElementById("editUserForm");
+    console.log(userSelectField.value);
+    if (userSelectField.value == -1) {
+
+        editForm.reset();
+        return;
+    }
+    let usr = userMap.get(parseInt(userSelectField.value));
+    editForm.nome.value = usr.nome;
+    editForm.cognome.value = usr.cognome;
+    editForm.datanascita.value = usr.datanascita;
+    editForm.tipologia.value = usr.tipologia;
+}
+function renderUserList() {
+    retrieveUsersFromStorage();
+    let out = document.getElementById("userSelectionList");
+    if (out == null) {
+        return;
+    }
+    if (users.length == 0) {
+        return;
+    }
+    let list = `<option value=-1></option>`
+    list += users.map(d => d.renderUserInList()).join(" ");
+    out.innerHTML = list
+
+
+
+}
 function renderTransList() {
     retrieveTransactionsFromStorage();
-    var out = document.getElementById('generatedTransList');
+    let out = document.getElementById('generatedTransList');
     if (out == null) {
         return;
     }
@@ -69,46 +103,51 @@ class User extends Entity {
         <td><button onclick="deleteuserbyid(${users.indexOf(this)})">Elimina</button></td>
         </tr>`;
     }
+    renderUserInList() {
+        return `<option value=${this.id}>${this.nome} ${this.cognome}</option>`
+    }
 
 }
 function deleteuserbyid(id) {
     retrieveUsersFromStorage();
     users.splice(id, 1);
     pushUsersToStorage();
-    renderUserList();
+    renderUserTable();
 }
-
 
 function clearstorage() {
     localStorage.clear();
 }
 
 function retrieveUsersFromStorage() {
+
+
     let temp = JSON.parse(localStorage.getItem("users"));
     if (temp == null) return;
     let tusers = [];
     for (let i = 0; i < temp.length; i++) {
         tusers.push(new User(temp[i].id, temp[i].nome, temp[i].cognome, temp[i].datanascita, temp[i].tipologia))
+        userMap.set(temp[i].id, temp[i]);
     }
     users = tusers;
 }
 function pushUsersToStorage() {
-
-    localStorage.setItem("users", JSON.stringify(users));
+    console.log(userMap);
+    localStorage.setItem("users", JSON.stringify(Array.from(userMap.values())));
 }
 
 function aggiungiUser(event) {
 
     event.preventDefault();
 
-    const form = event.target;
+    let form = event.target;
     let response = document.getElementById("addresponse");
 
-    if (addUser(nextID,form.nome.value, form.cognome.value, form.datanascita.value, form.tipologia.value)) {
+    if (addUser(nextUserID, form.nome.value, form.cognome.value, form.datanascita.value, form.tipologia.value)) {
         response.innerText = "Utente aggiunto con successo";
         response.style.color = "green"
-        nextID++;
-        localStorage.setItem("nextID", JSON.stringify(nextID));
+        nextUserID++;
+        localStorage.setItem("nextUserID", JSON.stringify(nextUserID));
         clearForm(form);
     } else {
         response.innerText = "Errore nell'aggiunta dell'utente.";
@@ -117,23 +156,23 @@ function aggiungiUser(event) {
     response.style.visibility = "visible";
 
 };
-function addUser(id,nome, cognome, datanascita, tipologia) {
+function addUser(id, nome, cognome, datanascita, tipologia) {
     if (nome == "" || cognome == "") {
         return false;
     }
     let b = new User(id, nome, cognome, datanascita, tipologia)
     retrieveUsersFromStorage();
     users.push(b);
+    userMap.set(b.id, b);
     pushUsersToStorage();
+    refresh();
     return true;
 
 }
-function rimuoviUser(event) {
-    event.preventDefault();
-
-    const form = event.target;
-    let response = document.getElementById("removeresponse");
-    if (removeUser(form.name.value, form.cognome.value)) {
+function rimuoviUser() {
+    let userSelectField = document.getElementById("userSelectionList");
+    let response = document.getElementById("editresponse");
+    if (removeUser(userSelectField.value)) {
         response.innerText = "Utente rimosso con successo";
         response.style.color = "green"
     } else {
@@ -143,21 +182,43 @@ function rimuoviUser(event) {
     response.style.visibility = "visible";
 
 }
-function removeUser(nome, cognome) {
+
+function removeUser(id) {
+    let _id = parseInt(id);
     retrieveUsersFromStorage();
-    for (let i = 0; i < users.length; i++) {
-        if (users[i].nome === nome && users[i].cognome === cognome) {
-            users.splice(i, 1)
-            pushUsersToStorage();
-            return true;
-        }
+    if (userMap.has(_id)) {
+        userMap.delete(_id);
+        pushUsersToStorage();
+        refresh();
+        return true;
     }
     return false;
 
 }
+function aggiornaUser(event) {
+    event.preventDefault();
+    let form = event.target;
+    let response = document.getElementById("editresponse");
+    if (editUser(form.userSelectionList.value, form.nome.value, form.cognome.value, form.datanascita.value, form.tipologia.value)) {
+
+    }
+
+}
+function editUser(id, nome, cognome, data, tipo) {
+    console.log(id + " " + nome + " " + cognome + " " + data + " " + tipo);
+    let usr = userMap.get(parseInt(id));
+    usr.nome = nome;
+    usr.cognome = cognome;
+    usr.datanascita = data;
+    usr.tipologia = tipo;
+    pushUsersToStorage();
+    refresh();
+
+}
 // --------------------------- TRANSACTIONS --------------------------------
-class Transaction {
-    constructor(owner, net, type, date) {
+class Transaction extends Entity {
+    constructor(id, owner, net, type, date) {
+        super(id);
         this.owner = owner;
         this.net = net;
         this.type = type;
@@ -185,12 +246,13 @@ function retrieveTransactionsFromStorage() {
     if (temp == null) return;
     let tTrans = [];
     for (let i = 0; i < temp.length; i++) {
-        tTrans.push(new Transaction(temp[i].owner, temp[i].net, temp[i].type, temp[i].date));
+        tTrans.push(new Transaction(temp[i].id, temp[i].owner, temp[i].net, temp[i].type, temp[i].date));
+        transMap.set(temp[i].id, temp[i]);
     }
     trans = tTrans;
 }
 function pushTransactionToStorage() {
-    localStorage.setItem("trans", JSON.stringify(trans));
+    localStorage.setItem("trans", JSON.stringify(Array.from(transMap.values())));
 }
 function randomDate(start, end) {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
@@ -203,13 +265,27 @@ function generateRandomTransaction() {
     let randUser = users[Math.floor(Math.random() * (users.length))];
     let randAmount = Math.floor(Math.random() * 20000 * 100) / 100;
     console.log(randUser);
-    trans.push(new Transaction(randUser, randAmount, "RandomAction", randomDate(new Date(1990, 1, 4), new Date())))
+    let t = new Transaction(nextTransID, randUser, randAmount, "RandomAction", randomDate(new Date(1990, 1, 4), new Date()));
+    trans.push(t);
+    transMap.set(t.id, t);
+    nextTransID++;
+    localStorage.setItem("nextTransID", JSON.stringify(nextTransID));
+
     pushTransactionToStorage();
     renderTransList();
 
 }
 function clearTransactions() {
     trans = [];
+    transMap = new Map();
     pushTransactionToStorage();
     renderTransList();
+}
+function refresh() {
+    retrieveUsersFromStorage();
+    retrieveTransactionsFromStorage();
+    renderUserList();
+    renderUserTable();
+    renderTransList();
+
 }

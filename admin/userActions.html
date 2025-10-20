@@ -66,12 +66,18 @@
 
                 </form>
             </div>
+
             <div class="col-md">
-                <form onsubmit="rimuoviUser(event)">
-                    <h1 style="height: 1.5rem;">Remove client</h1>
-                    <div id="removeresponse" class="inlineresponse">
+                <form onsubmit="aggiornaUser(event)" id="editUserForm">
+                    <h1 style="height: 1.5rem;">Edit client</h1>
+                    <div id="editresponse" class="editresponse">
 
                     </div>
+                    <label for="userSelect">Select the user:</label>
+                    <select name="userSelectionList" id="userSelectionList" onchange="refreshEditForm()">
+                        <option value="1">Test</option>
+
+                    </select>
                     <div>
                         <label for="nome" class="form-label">Nome</label>
                         <input id="nome" name="nome" type="text" class="form-text">
@@ -79,11 +85,31 @@
 
                     <div>
                         <label for="cognome" class="form-label">Cognome</label>
-                        <input id="cognome" name="cognome" type="text" class="form-text">
+                        <input id="cognome" name="cognome" type="text">
                     </div>
 
+                    <div>
+                        <label for="datanascita" class="form-label">Data di Nascita</label>
+                        <input id="datanascita" name="datanascita" type="date" class="form-floating">
+                    </div>
 
-                    <button class="btn btn-primary" type="submit">Remove</button>
+                    <div>
+                        <label for="tipologia" class="form-label">Tipo conto</label>
+                        <select id="tipologia" name="tipologia" class="form-text">
+                            <option value="Ordinario">
+                                Ordinario
+                            </option>
+                            <option value="Pacchetto">
+                                Pacchetto
+                            </option>
+                            <option value="Convenzionato">
+                                Convenzionato
+                            </option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary" type="submit">Confirm edits</button>
+                    <button class="btn btn-danger btn-sm" type="button" onclick="rimuoviUser()">Remove</button>
 
 
                 </form>
@@ -94,7 +120,7 @@
 
     <script src="/js/script.js"></script>
     <script>
-        console.log("lol");
+        refresh();
         $.get("/nav.html", function (data) {
             $("#nav-placeholder").replaceWith(data);
         });
