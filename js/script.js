@@ -1,8 +1,10 @@
 let tempusers = [];
 var users = [];
 var userMap = new Map();
+var subUser = [];
 var trans = [];
 var transMap = new Map();
+var subTrans = [];
 var nextUserID = JSON.parse(localStorage.getItem("nextUserID")) || 1;
 var nextTransID = JSON.parse(localStorage.getItem("nextTransID")) || 1;
 
@@ -15,21 +17,6 @@ function clearForm(form) {
 };
 
 
-function renderUserTable() {
-    retrieveUsersFromStorage();
-    let out = document.getElementById('generatedUserList');
-    if (out == null) {
-        return;
-    }
-    if (users.length == 0) {
-        document.getElementById("hiddenNavHelper").style.display = "";
-        out.innerHTML = "";
-        return;
-    }
-    document.getElementById("hiddenNavHelper").style.display = "none";
-
-    out.innerHTML = users.map(d => d.renderTableRow()).join(" ");
-}
 function refreshEditForm() {
     let userSelectField = document.getElementById("userSelectionList");
     let editForm = document.getElementById("editUserForm");
@@ -45,37 +32,68 @@ function refreshEditForm() {
     editForm.datanascita.value = usr.datanascita;
     editForm.tipologia.value = usr.tipologia;
 }
-function renderUserList() {
-    retrieveUsersFromStorage();
+function renderUserList(userList) {
+    if (users == null) {
+        return;
+    }
+    if (userList == null) {
+        userList = users;
+    }
     let out = document.getElementById("userSelectionList");
     if (out == null) {
         return;
     }
-    if (users.length == 0) {
+    if (userList.length == 0) {
         return;
     }
     let list = `<option value=-1></option>`
-    list += users.map(d => d.renderUserInList()).join(" ");
+    list += userList.map(d => d.renderUserInList()).join(" ");
     out.innerHTML = list
 
-
-
 }
-function renderTransList() {
-    retrieveTransactionsFromStorage();
+
+function renderUserTable(userList) {
+    let out = document.getElementById('generatedUserList');
+    if (out == null) {
+        return;
+    }
+    if (userMap.size == 0) {
+
+        out.innerHTML = `<td colspan="100%"><p class="noResultText" id="hiddenNavHelper">No users in list, head to <a href="/admin/userActions.html">the
+                user action panel</a> to add a new user</p></td>`;
+        return;
+    }
+    if (users == null) {
+        return;
+    }
+    if (userList == null) {
+        userList = users;
+    }
+
+    out.innerHTML = userList.map(d => d.renderTableRow()).join(" ");
+}
+
+function renderTransList(transactions) {
     let out = document.getElementById('generatedTransList');
     if (out == null) {
         return;
     }
-    if (trans.length == 0) {
-        document.getElementById("hiddenNavHelper").style.display = "";
-        out.innerHTML = "";
+    if (transMap.size == 0) {
+        out.innerHTML = `<td colspan="100%"><p  id="hiddenNavHelper" class="noResultText">No transactions to show, generate one via the dedicated
+                    button
+                    above.</p></td>`;
         return;
     }
-    document.getElementById("hiddenNavHelper").style.display = "none";
+    if (trans == null) {
+        return;
+    }
+    if (transactions == null) {
+        transactions = trans;
 
-    out.innerHTML = trans.map(d => d.renderTableRow()).join(" ");
+    }
+    out.innerHTML = transactions.map(d => d.renderTableRow()).join(" ");
 }
+
 // ------------------------------ USERS ------------------------------------
 
 class Entity {
@@ -100,7 +118,7 @@ class User extends Entity {
         <td>${this.cognome}</td>
         <td>${this.datanascita}</td>
         <td>${this.tipologia}</td>
-        <td><button onclick="deleteuserbyid(${users.indexOf(this)})">Elimina</button></td>
+        <td><button class="btn btn-danger" onclick="deleteuserbyid(${this.id})">Elimina</button></td>
         </tr>`;
     }
     renderUserInList() {
@@ -109,8 +127,10 @@ class User extends Entity {
 
 }
 function deleteuserbyid(id) {
-    retrieveUsersFromStorage();
+    updateLS()
     users.splice(id, 1);
+    userMap.delete(parseInt(id));
+    console.log(id);
     pushUsersToStorage();
     renderUserTable();
 }
@@ -126,8 +146,9 @@ function retrieveUsersFromStorage() {
     if (temp == null) return;
     let tusers = [];
     for (let i = 0; i < temp.length; i++) {
-        tusers.push(new User(temp[i].id, temp[i].nome, temp[i].cognome, temp[i].datanascita, temp[i].tipologia))
-        userMap.set(temp[i].id, temp[i]);
+        let u = new User(temp[i].id, temp[i].nome, temp[i].cognome, temp[i].datanascita, temp[i].tipologia);
+        tusers.push(u);
+        userMap.set(u.id, u);
     }
     users = tusers;
 }
@@ -161,7 +182,7 @@ function addUser(id, nome, cognome, datanascita, tipologia) {
         return false;
     }
     let b = new User(id, nome, cognome, datanascita, tipologia)
-    retrieveUsersFromStorage();
+    updateLS()
     users.push(b);
     userMap.set(b.id, b);
     pushUsersToStorage();
@@ -185,7 +206,7 @@ function rimuoviUser() {
 
 function removeUser(id) {
     let _id = parseInt(id);
-    retrieveUsersFromStorage();
+    updateLS()
     if (userMap.has(_id)) {
         userMap.delete(_id);
         pushUsersToStorage();
@@ -230,14 +251,14 @@ class Transaction extends Entity {
         <td>${this.net}</td>
         <td>${this.type}</td>
         <td>${this.date}</td>
-        <td><button onclick="deletetransbyid(${trans.indexOf(this)})">Elimina</button></td>
+        <td><button class="btn btn-danger" onclick="deletetransbyid(${this.id})">Elimina</button></td>
         </tr>`;
     }
 
 }
 function deletetransbyid(id) {
-    retrieveTransactionsFromStorage();
-    trans.splice(id, 1);
+    updateLS()
+    transMap.delete(parseInt(id))
     pushTransactionToStorage();
     renderTransList();
 }
@@ -246,8 +267,9 @@ function retrieveTransactionsFromStorage() {
     if (temp == null) return;
     let tTrans = [];
     for (let i = 0; i < temp.length; i++) {
-        tTrans.push(new Transaction(temp[i].id, temp[i].owner, temp[i].net, temp[i].type, temp[i].date));
-        transMap.set(temp[i].id, temp[i]);
+        let tempTrans = new Transaction(temp[i].id, temp[i].owner, temp[i].net, temp[i].type, temp[i].date)
+        tTrans.push(tempTrans);
+        transMap.set(tempTrans.id, tempTrans);
     }
     trans = tTrans;
 }
@@ -259,8 +281,7 @@ function randomDate(start, end) {
 }
 
 function generateRandomTransaction() {
-    retrieveUsersFromStorage()
-    retrieveTransactionsFromStorage();
+    updateLS()
     console.log(users);
     let randUser = users[Math.floor(Math.random() * (users.length))];
     let randAmount = Math.floor(Math.random() * 20000 * 100) / 100;
@@ -275,17 +296,78 @@ function generateRandomTransaction() {
     renderTransList();
 
 }
+function generateRandomUser() {
+    updateLS();
+    if (addUser(nextUserID, "RandomName" + nextUserID, "RandomSurname" + nextUserID, "1970-01-01", "RandomlyGenerated")) {
+        nextUserID++;
+        localStorage.setItem("nextUserID", JSON.stringify(nextUserID));
+        refresh();
+    }
+
+}
 function clearTransactions() {
     trans = [];
     transMap = new Map();
     pushTransactionToStorage();
     renderTransList();
 }
-function refresh() {
+function clearUsers() {
+    updateLS();
+    users = [];
+    userMap = new Map();
+    pushUsersToStorage();
+    refresh();
+    nextUserID = 1;
+    localStorage.setItem("nextUserID", JSON.stringify(nextUserID));
+
+}
+function updateLS() {
     retrieveUsersFromStorage();
     retrieveTransactionsFromStorage();
+}
+function refresh() {
+    updateLS()
     renderUserList();
     renderUserTable();
     renderTransList();
 
+}
+function filterTransResults(by) {
+    subTrans = [];
+    if (by == null || by == "") {
+        refresh();
+        return;
+    }
+    transMap.forEach(e => {
+        TransContainsName(e, by);
+    });
+    renderTransList(subTrans);
+
+}
+function filterUserResults(by) {
+    subUser = [];
+    if (by == null || by == "") {
+        refresh();
+        return;
+    }
+
+    userMap.forEach(e => {
+        UserContainsName(e, by);
+    });
+    console.log(subUser[0]);
+    renderUserTable(subUser);
+
+}
+function TransContainsName(obj, str) {
+
+    if (obj.owner.nome.includes(str) || obj.owner.cognome.includes(str)) {
+        subTrans.push(obj);
+    }
+}
+function UserContainsName(obj, str) {
+    console.log(obj instanceof User);
+    if (obj.nome.includes(str) || obj.cognome.includes(str)) {
+        console.log(obj);
+        subUser.push(obj);
+    }
 }

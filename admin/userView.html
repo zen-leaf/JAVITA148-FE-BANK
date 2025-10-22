@@ -21,29 +21,52 @@
         <div id="nav-placeholder"></div>
 
     </header>
-    <div class="output">
-        <table>
-            <thead>
-                <tr>
-                    <th>Acc.ID</th>
-                    <th>Nome</th>
-                    <th>Cognome</th>
-                    <th>Data di Nascita</th>
-                    <th>Tipologia conto</th>
-                    <th>Elimina</th>
-                </tr>
-            </thead>
+    <div class="container-lg ">
 
-            <tbody id="generatedUserList">
-            </tbody>
+        <div class="row m-auto">
+            <div class="col-md p-1">
+                <button class="btn btn-primary w-100" onclick="generateRandomUser()">Generate a random
+                    user</button>
+            </div>
+            <div class="col-md p-1">
+                <button class="btn btn-primary w-100" onclick="clearUsers()">Clear all
+                    users</button>
+            </div>
+        </div>
+        <div class="row m-auto">
+            <div class="col-md">
+                <div class="py-2">
+                    <label for="userfilter">Filter:</label>
+                    <input class="w-75 form-floating" type="text" id="userfilter" name="userfilter"
+                        oninput="filterUserResults(this.value)" />
+                </div>
+            </div>
+        </div>
 
-        </table>
+        <div class="output">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Acc.ID</th>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>Data di Nascita</th>
+                        <th>Tipologia conto</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+
+                <tbody id="generatedUserList">
+                </tbody>
+
+            </table>
+        </div>
+
     </div>
-    <p id="hiddenNavHelper" style="display: none;">No users in list, head to <a href="/admin/userActions.html">the
-            user action panel</a> to add a new user</p>
+
     <script src="/js/script.js"></script>
     <script>
-        renderUserTable();
+        refresh();
         $.get("/nav.html", function (data) {
             $("#nav-placeholder").replaceWith(data);
         });

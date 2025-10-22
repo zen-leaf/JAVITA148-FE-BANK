@@ -85,3 +85,6 @@ tr:hover {
   float: none;
   display: inline-block;
 }
+.noResultText{
+  margin: 0rem;
+}
